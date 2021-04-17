@@ -23,6 +23,7 @@ def abc():
 
 @app.route("/add.html", methods=["POST"])
 def add():
+    global number
     number += 1
     return flask.jsonify(
                 status=200
@@ -30,7 +31,8 @@ def add():
 
 @app.route("/temp.html", methods=["POST"])
 def temp():
-    number = flask.request.args.get('info')
+    global temperature
+    temperature = flask.request.args.get('info')
     return flask.jsonify(
                 status=200
             )
