@@ -32,7 +32,9 @@ def add():
 @app.route("/temp.html", methods=["POST"])
 def temp():
     global temperature
-    info = list(flask.request.form.keys())[0]
+    
+    info = list(flask.request.form.keys())
+    print(info)
     tempString = json.loads(info)
     
     temperature = tempString.get("info")
