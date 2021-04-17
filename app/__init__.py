@@ -11,7 +11,7 @@ def home_view():
 
 @app.route("/abc.html", methods=["GET"])
 def abc():
-    return jsonify(
+    return flask.jsonify(
                 message="good test",
                 category="success",
                 data=data,
