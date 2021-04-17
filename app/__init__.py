@@ -34,6 +34,8 @@ def temp():
     global temperature
     
     info = 0
+    print(flask.request.args)
+    print(flask.request.form)
     print(flask.request.form)
     tempString = json.loads(info)
     
