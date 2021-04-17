@@ -31,9 +31,11 @@ def add():
 
 @app.route("/temp.html", methods=["POST"])
 def temp():
-    print(list(flask.request.form.keys())[0])
     global temperature
-    temperature = flask.request.args.get('info')
+    info = list(flask.request.form.keys())[0]
+    tempString = json.loads(info)
+    
+    temperature = tempString("info")
     return flask.jsonify(
                 status=200
             )
