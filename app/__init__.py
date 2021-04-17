@@ -33,7 +33,7 @@ def add():
 def temp():
     print(flask.request.args)
     print(flask.request)
-    print(flask.request.form)
+    print(flask.request.form.to_dict())
     global temperature
     temperature = flask.request.args.get('info')
     return flask.jsonify(
