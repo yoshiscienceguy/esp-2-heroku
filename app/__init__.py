@@ -35,7 +35,7 @@ def temp():
     info = list(flask.request.form.keys())[0]
     tempString = json.loads(info)
     
-    temperature = tempString("info")
+    temperature = tempString.get("info")
     return flask.jsonify(
                 status=200
             )
