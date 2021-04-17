@@ -14,6 +14,6 @@ def abc():
     return flask.jsonify(
                 message="good test",
                 category="success",
-                data=data,
+                data="yes",
                 status=200
             )
