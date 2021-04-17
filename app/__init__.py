@@ -33,7 +33,7 @@ def add():
 def temp():
     global temperature
     
-    info = list(flask.request.form.keys())
+    info = list(flask.request.form)
     print(info)
     tempString = json.loads(info)
     
