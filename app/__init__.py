@@ -5,10 +5,11 @@ from authlib.flask.client import OAuth
 app = flask.Flask(__name__)
 
 number = 0
+temperature = 0
 
 @app.route("/")
 def home_view():
-    return str(number)
+    return "number: " + str(number) +  " , temperature" + str(temperature)
 
 
 @app.route("/abc.html", methods=["GET"])
@@ -23,6 +24,13 @@ def abc():
 @app.route("/add.html", methods=["POST"])
 def add():
     number += 1
+    return flask.jsonify(
+                status=200
+            )
+
+@app.route("/temp.html", methods=["POST"])
+def temp():
+    number = flask.request.args.get('info')
     return flask.jsonify(
                 status=200
             )
