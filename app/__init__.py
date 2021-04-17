@@ -9,7 +9,7 @@ def home_view():
     return "<p>hello</p>"
 
 
-@app.route("/abc", methods=["GET"])
+@app.route("/abc.html", methods=["GET"])
 def abc():
     return jsonify(
                 message="good test",
