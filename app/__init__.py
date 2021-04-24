@@ -34,7 +34,7 @@ def latest():
     if(latest == None):
         return flask.jsonify(info="No Data",status=200)
     else:  
-        return flask.jsonify(info=latest.status + "," + latest.temp,status=200) 
+        return flask.jsonify(info=latest.status + ";" + latest.temp,status=200) 
 
 @app.route("/toggle.html", methods=["POST"])
 def toggle():
