@@ -32,7 +32,7 @@ def home_view():
 def latest():
     latest = Info.query.order_by(Info.id.desc()).first()
     if(latest == None):
-        return "No Data"
+        return flask.jsonify(info="No Data",status=200)
     else:  
         return flask.jsonify(info=latest.status + "," + latest.temp,status=200) 
 
