@@ -31,8 +31,10 @@ def home_view():
 @app.route("/latest.html", methods=["GET"])
 def latest():
     latest = Info.query.order_by(Info.id.desc()).first()
-    
-    return latest.status + "," + latest.temp  
+    if(latest == None):
+        return "No Data"
+    else:  
+        return latest.status + "," + latest.temp  
 
 @app.route("/toggle.html", methods=["POST"])
 def toggle():
