@@ -53,7 +53,7 @@ def add():
         stat = "0"
         
     newInfo = Info(temp = temperature , status = stat)
-    db.session.add(newInfo2)
+    db.session.add(newInfo)
     db.session.commit()
     return flask.jsonify(
                 status=200
