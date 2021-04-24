@@ -28,14 +28,11 @@ def home_view():
     
     return toReturn
 
-@app.route("/abc.html", methods=["GET"])
-def abc():
-    return flask.jsonify(
-                message="good test",
-                category="success",
-                data="yes",
-                status=200
-            )
+@app.route("/latest.html", methods=["GET"])
+def latest():
+    latest = Info.query.order_by(Info.id.desc()).first()
+    
+    return latest.status + "," + latest.temp  
 
 @app.route("/toggle.html", methods=["POST"])
 def toggle():
