@@ -36,6 +36,26 @@ def latest():
     else:  
         return flask.jsonify(info=latest.status + ";" + latest.temp,status=200) 
 
+@app.route("/toggle")
+def toggle_Manual():
+    oldInfo = Info.query.order_by(Info.id.desc()).first()
+    if(oldInfo == None):
+        temperature = "0"
+        stat = "0"
+    else:
+        temperature = oldInfo.temp
+        stat = oldInfo.status
+
+    if(stat == "0"):
+        stat = "1"
+    else:
+        stat = "0"
+        
+    newInfo = Info(temp = temperature , status = stat)
+    db.session.add(newInfo)
+    db.session.commit()
+    return flask.jsonify(status=200)
+
 @app.route("/toggle.html", methods=["POST"])
 def toggle():
     oldInfo = Info.query.order_by(Info.id.desc()).first()
