@@ -13,8 +13,8 @@ SoftwareSerial Serial_3(10, 11); // TX, RX
 //#endif
 
 
-char ssid[] = "Dank_Memes";     // your network SSID (name)
-char pwd[] = "fernando123";  // your network password
+char ssid[] = "network";     // your network SSID (name)
+char pwd[] = "pass";  // your network password
 
 char server[] = "https://esp-2-heroku.herokuapp.com";
 // Initialize the Wifi client library
@@ -22,38 +22,38 @@ WiFiEspClient client;
 
 float temp = 25;
 int ledStatus = 0;
-unsigned long timeUntilNextUpdate = 20000;
-unsigned long timeCheckStatus = 2000;
+unsigned long timeUntilNextUpdate = 20000; // 20 seconds to send temp info
+unsigned long timeCheckStatus = 2000; // 2 seconds pull info
 unsigned long currentTime = 0;
 
 void setup()
 {
-  pinMode(13, OUTPUT);
-  pinMode(12, INPUT_PULLUP);
+  pinMode(13, OUTPUT); //built in LED
+  pinMode(2, INPUT_PULLUP); // built in switch
 
-  Serial.begin(115200);
+  Serial.begin(115200); //baudrate for serial monitor
 
-  Serial_3.begin(115200);
-  Serial_3.println("AT+UART_DEF=9600,8,1,0,0\r\n");
+  Serial_3.begin(115200); //defaultbaudrate for ESP
+  Serial_3.println("AT+UART_DEF=9600,8,1,0,0\r\n"); //AT command to change Baudrate
   Serial_3.flush();
   delay(2);
-  Serial_3.end();
+  Serial_3.end(); //close comm port
 
-  Serial_3.begin(9600);
-  WiFi.init(&Serial_3);
+  Serial_3.begin(9600); //start comm port at 9600
+  WiFi.init(&Serial_3); //initialize ESP with Serial3
 
-  WiFi.begin(ssid, pwd);
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
+  WiFi.begin(ssid, pwd); //connect to supplied wifi name and password
+  IPAddress ip = WiFi.localIP(); //get IP address
+  Serial.print("IP Address: "); //print IP address
   Serial.println(ip);
 
-  assertEquals("Connect to server", client.connectSSL(server, 443), 1);
-  assertEquals("Connected", client.connected(), true);
+  assertEquals("Connect to server", client.connectSSL(server, 443), 1); //connect to server
+  assertEquals("Connected", client.connected(), true); // check if connnection is valid
   //--------------------------------------------------------------
   // HTTP request without 'Connection: close' command
 }
 
-void updateLight() {
+void updateLight() { //function to update LED if 1 == On or 0 == Off
   if (ledStatus == 1) {
     digitalWrite(13, HIGH);
   }
@@ -62,7 +62,7 @@ void updateLight() {
   }
 }
 
-void updateStatus() {
+void updateStatus() { //Pull information from web
   client.println("GET /latest.html HTTP/1.1");
   client.println("Host: esp-2-heroku.herokuapp.com");
   client.println("Connection: keep-alive");
@@ -74,14 +74,15 @@ void updateStatus() {
     //char c = client.read();
     //Serial.write(c);
     if (found == false) {
-      client.find((char*) "\r\n\r\n");
+      client.find((char*) "\r\n\r\n"); // text before the body of a request so we can ignore the header
       found = true;
     }
     else {
-      String info = client.readString();
-      int startIndex = info.indexOf(":") + 2;
+      String info = client.readString(); //text ex. {'info':'1;255','status':200}
+      int startIndex = info.indexOf(":") + 2; 
       int endIndex = info.indexOf(",") - 1;
-
+		
+	  //Substring ex. 1;255
       info = info.substring(startIndex, endIndex);
       String Stat = info.substring(0, info.indexOf(";"));
       String Temp = info.substring(info.indexOf(";") + 1);
@@ -95,11 +96,11 @@ void updateStatus() {
   }
 }
 
-void ConnectServer(){
+void ConnectServer(){ // connect to server
   client.connectSSL(server, 443);
 }
 
-void toggleStatus() {
+void toggleStatus() { //toggle status from 1 to 0 or viceversa
   client.println("POST /toggle.html HTTP/1.1");
   client.println("Host: esp-2-heroku.herokuapp.com");
   client.println("Connection: keep-alive");
@@ -112,8 +113,8 @@ void toggleStatus() {
   }
 }
 
-void postTemp() {
-  String togo = String(analogRead(A0));
+void postTemp() { //send current temp from A0 to server.
+  String togo = String(analogRead(A0)); //object connected to A0
   client.println("POST /temp.html HTTP/1.1");
   client.println("Host: esp-2-heroku.herokuapp.com");
   client.println("Accept: */*");
@@ -133,7 +134,7 @@ void postTemp() {
 }
 
 void disconnectServer(){
-  Serial.println();
+  Serial.println(); // If server is disconnected, we disconnect and reconnect server
   Serial.println("Disconnecting from server...");
 
   client.stop();
@@ -141,32 +142,33 @@ void disconnectServer(){
   ConnectServer();
 }
 void loop()
-{
-  if(digitalRead(2) == HIGH){
-    while(digitalRead(2) == HIGH){}
+{ 
+  if(digitalRead(2) == HIGH){ // check if switch is pulled
+    while(digitalRead(2) == HIGH){} //wait for debounce effect
     toggleStatus();
     updateStatus();
     updateLight();  
   }
 
-  if((millis() - currentTime) > timeUntilNextUpdate){
+  if((millis() - currentTime) > timeUntilNextUpdate){ // Post temp after timeUntilNextUpdate milliseconds value
     currentTime = millis();
     postTemp();  
     
   }
-  if((millis() - currentTime) > timeCheckStatus){
+  if((millis() - currentTime) > timeCheckStatus){// Post temp after timeCheckStatus milliseconds value
     currentTime = millis();  
     updateStatus();
     updateLight();
   }
 
-  if(client.connected() == false){
+  if(client.connected() == false){ // If client disconnects, reconnect
     disconnectServer();
   }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////
+//Testing
 void assertEquals(const char* test, int actual, int expected)
 {
   if (actual == expected)
