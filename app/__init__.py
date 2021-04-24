@@ -54,9 +54,7 @@ def toggle():
     newInfo = Info(temp = temperature , status = stat)
     db.session.add(newInfo)
     db.session.commit()
-    return flask.jsonify(
-                status=200
-            )
+    return flask.jsonify(status=200)
 
 @app.route("/temp.html", methods=["POST"])
 def temp():
