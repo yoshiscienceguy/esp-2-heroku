@@ -37,8 +37,8 @@ def abc():
                 status=200
             )
 
-@app.route("/add.html", methods=["POST"])
-def add():
+@app.route("/toggle.html", methods=["POST"])
+def toggle():
     oldInfo = Info.query.order_by(Info.id.desc()).first()
     if(oldInfo == None):
         temperature = "0"
