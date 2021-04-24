@@ -10,7 +10,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 db = SQLAlchemy(app)
 
-db.create_all()
 #db.create_all() to create
 class Info(db.Model):
     id = db.Column(db.Integer, primary_key=True)
